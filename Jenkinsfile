@@ -8,11 +8,22 @@ pipeline {
         stage('Deploy to Kubernetes') {
             steps {
                 withKubeConfig([credentialsId: 'kubeconfig-file']) {
-                script {
-                    def namespace = 'master' // Update based on branch (dev, staging, production)
-                    sh """
-                        kubectl apply -f deployment.yaml -n ${namespace}
-                    """
+                    script {
+                        // Dynamically set the namespace based on the branch name
+                        def namespace = ''
+                        if (env.BRANCH_NAME == 'master') {
+                            namespace = 'production'
+                        } else if (env.BRANCH_NAME == 'staging') {
+                            namespace = 'staging'
+                        } else {
+                            namespace = 'dev'
+                        }
+                        
+                        echo "Deploying to namespace: ${namespace}"
+
+                        sh """
+                            kubectl apply -f deployment.yaml -n ${namespace}
+                        """
                     }
                 }
             }
