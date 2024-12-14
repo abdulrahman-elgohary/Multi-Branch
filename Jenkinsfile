@@ -1,13 +1,30 @@
 pipeline {
     agent any
+    
+    environment {
+        KUBE_CONFIG = credentials('kubeconfig-file')
+    }
     stages {
         stage('Deploy to Kubernetes') {
             steps {
-                script {
-                    def namespace = 'staging' // Update based on branch (dev, staging, production)
-                    sh """
-                        kubectl apply -f deployment.yaml -n ${namespace}
-                    """
+                withKubeConfig([credentialsId: 'kubeconfig-file']) {
+                    script {
+                        // Dynamically set the namespace based on the branch name
+                        def namespace = ''
+                        if (env.BRANCH_NAME == 'main') {
+                            namespace = 'production'
+                        } else if (env.BRANCH_NAME == 'staging') {
+                            namespace = 'staging'
+                        } else {
+                            namespace = 'dev'
+                        }
+                        
+                        echo "Deploying to namespace: ${namespace}"
+
+                        sh """
+                            kubectl apply -f deployment.yaml -n ${namespace}
+                        """
+                    }
                 }
             }
         }
