@@ -11,7 +11,7 @@ pipeline {
                     script {
                         // Dynamically set the namespace based on the branch name
                         def namespace = ''
-                        if (env.BRANCH_NAME == 'master') {
+                        if (env.BRANCH_NAME == 'main') {
                             namespace = 'production'
                         } else if (env.BRANCH_NAME == 'staging') {
                             namespace = 'staging'
