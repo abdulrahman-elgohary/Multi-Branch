@@ -20,7 +20,7 @@ pipeline {
                             namespace = 'dev'
                         }
                         
-                        echo "Deploying to namespace: ${namespace}"
+                        echo "Deploying to first namespace: ${namespace}"
 
                         sh """
                             kubectl apply -f deployment.yaml -n ${namespace}
