@@ -1,5 +1,7 @@
 pipeline {
-    agent any
+    agent {
+        label 'my-slave'
+    }
     environment {
         KUBE_CONFIG = credentials('kubeconfig-file')
     }
