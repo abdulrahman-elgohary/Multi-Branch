@@ -1,13 +1,18 @@
 pipeline {
     agent {
-        label 'my-slave'
+        label 'my-slave' // Default agent for the pipeline
     }
     environment {
         KUBE_CONFIG = credentials('kubeconfig-file')
     }
     stages {
+        stage('Build and Test') {
+            steps {
+                echo 'Running build and test on the slave node...'
+            }
+        }
         stage('Deploy to Kubernetes') {
-            agent { label 'master' }
+            agent { label 'master' } // Specify master node for this stage
             steps {
                 withKubeConfig([credentialsId: 'kubeconfig-file']) {
                     script {
