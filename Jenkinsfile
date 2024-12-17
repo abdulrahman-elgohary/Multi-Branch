@@ -7,6 +7,7 @@ pipeline {
     }
     stages {
         stage('Deploy to Kubernetes') {
+            agent { label 'master' }
             steps {
                 withKubeConfig([credentialsId: 'kubeconfig-file']) {
                     script {
