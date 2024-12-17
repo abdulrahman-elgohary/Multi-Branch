@@ -23,7 +23,7 @@ pipeline {
                         echo "Deploying to the namespace: ${namespace}"
 
                         sh """
-                            kubectl --kubeconfig=/home/ubuntu/config apply -f deployment.yaml -n ${namespace}
+                            kubectl apply -f deployment.yaml -n ${namespace}
                         """
                     }
                 }
