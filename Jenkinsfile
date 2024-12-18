@@ -13,8 +13,8 @@ pipeline {
         stage('Deploy to Kubernetes') {
            // agent { label 'master' } // Specify master node for this stage
             steps {
-                withKubeConfig([credentialsId: 'kubeconfig-file', serverUrl: 'https://192.168.49.2:8443']) {
-                    script {
+                script {
+                    withKubeConfig([credentialsId: 'kubeconfig-file', serverUrl: 'https://192.168.49.2:8443']) {
                         // Dynamically set the namespace based on the branch name
                         def namespace = ''
                         if (env.BRANCH_NAME == 'main') {
