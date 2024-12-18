@@ -29,7 +29,7 @@ pipeline {
                         echo "Deploying to the namespace: ${namespace}"
 
                         sh """
-                           export KUBECONFIG=${KUBECONFIG_FILE} && kubectl apply -f .
+                           export KUBECONFIG=${KUBECONFIG_FILE}
                            kubectl apply -f deployment.yaml -n ${namespace}
                         """
                     }
