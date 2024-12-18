@@ -7,7 +7,6 @@ pipeline {
             }
         }
         stage('Deploy to Kubernetes') {
-           // agent { label 'master' } // Specify master node for this stage
             steps {
                 script {
                     withKubeConfig([credentialsId: 'kubeconfig-file', serverUrl: 'https://192.168.49.2:8443']) {
@@ -24,8 +23,7 @@ pipeline {
                         echo "Deploying to the namespace: ${namespace}"
 
                         sh """
-                           export KUBECONFIG=${KUBECONFIG_FILE} 
-                           kubectl apply -f deployment.yaml -n ${namespace}
+                            kubectl apply -f deployment.yaml -n ${namespace}
                         """
                     }
                 }
