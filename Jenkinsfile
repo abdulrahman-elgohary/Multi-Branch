@@ -12,7 +12,7 @@ pipeline {
             }
         }
         stage('Deploy to Kubernetes') {
-            agent { label 'master' } // Specify master node for this stage
+            // agent { label 'master' } // Specify master node for this stage
             steps {
                 withKubeConfig([credentialsId: 'kubeconfig-file']) {
                     script {
