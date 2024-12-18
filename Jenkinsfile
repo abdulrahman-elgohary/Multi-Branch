@@ -14,6 +14,7 @@ pipeline {
         stage('Deploy to Kubernetes') {
             // agent { label 'master' } // Specify master node for this stage
             steps {
+                withCredentials([file(credentialsId: "${k8sCredentialsID}", variable: 'KUBECONFIG_FILE')]) {
                 withCredentials([file(credentialsId: file'kubeconfig-file', variable: 'KUBECONFIG_FILE')]) {
                     script {
                         // Dynamically set the namespace based on the branch name
