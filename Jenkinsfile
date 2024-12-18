@@ -9,7 +9,7 @@ pipeline {
         stage('Deploy to Kubernetes') {
             // agent { label 'master' } // Specify master node for this stage
             steps {
-                withCredentials([file(credentialsId: 'kubeconfig-file')] {
+                withCredentials([file(credentialsId: 'kubeconfig-file')]) {
                     script {
                         // Dynamically set the namespace based on the branch name
                         def namespace = ''
