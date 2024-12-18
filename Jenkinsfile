@@ -1,7 +1,5 @@
 pipeline {
-    agent {
-        label 'my-slave' // Default agent for the pipeline
-    }
+    agent any
     environment {
         KUBE_CONFIG = credentials('kubeconfig-file')
     }
@@ -14,7 +12,7 @@ pipeline {
         stage('Deploy to Kubernetes') {
             // agent { label 'master' } // Specify master node for this stage
             steps {
-                 withCredentials([file(credentialsId: 'kubeconfig-file', variable: 'KUBECONFIG_FILE')]) {
+                 withCredentials([file(credentialsId: 'kubeconfig-file')]) {
                     script {
                         // Dynamically set the namespace based on the branch name
                         def namespace = ''
@@ -29,7 +27,6 @@ pipeline {
                         echo "Deploying to the namespace: ${namespace}"
 
                         sh """
-                           export KUBECONFIG=${KUBECONFIG_FILE}
                            kubectl apply -f deployment.yaml -n ${namespace}
                         """
                     }
