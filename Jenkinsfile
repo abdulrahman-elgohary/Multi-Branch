@@ -1,9 +1,5 @@
 pipeline {
     agent any
-    environment {
-        // Explicitly declare credentials
-        KUBECONFIG = credentials('kubeconfig-file')
-    }
     stages {
         stage('Build and Test') {
             steps {
