@@ -2,7 +2,7 @@ pipeline {
     agent any
     environment {
         // Explicitly declare credentials
-        MY_CREDENTIAL = credentials('kubeconfig-file')
+        KUBECONFIG = credentials('kubeconfig-file')
     }
     stages {
         stage('Build and Test') {
@@ -13,7 +13,7 @@ pipeline {
         stage('Deploy to Kubernetes') {
            // agent { label 'master' } // Specify master node for this stage
             steps {
-                withCredentials(credentialsId: 'kubeconfig-file') {
+                withKubeConfig(credentialsId: 'kubeconfig-file') {
                     script {
                         // Dynamically set the namespace based on the branch name
                         def namespace = ''
