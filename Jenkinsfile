@@ -2,9 +2,6 @@ pipeline {
     agent {
         label 'my-slave' // Default agent for the pipeline
     }
-    environment {
-        KUBE_CONFIG = credentials('kubeconfig-file')
-    }
     stages {
         stage('Build and Test') {
             steps {
