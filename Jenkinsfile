@@ -1,34 +1,62 @@
 pipeline {
     agent any
+
+    environment {
+        KUBE_CONFIG = credentials('kubeconfig-file')
+        DOCKER_IMAGE = 'gohary101/jenkins_repo1010:2.1'
+    }
+
     stages {
-        stage('Build and Test') {
+        stage('Clone Repository') {
             steps {
-                echo 'Running build and test on the slave node...'
+                git branch: 'dev', url: 'https://github.com/abdulrahman-elgohary/Multi-Branch.git'
             }
         }
-        stage('Deploy to Kubernetes') {
-            // agent { label 'master' } // Specify master node for this stage
-            steps {
-                withCredentials([file(credentialsId: 'kubeconfig-file')]) {
-                    script {
-                        // Dynamically set the namespace based on the branch name
-                        def namespace = ''
-                        if (env.BRANCH_NAME == 'main') {
-                            namespace = 'production'
-                        } else if (env.BRANCH_NAME == 'staging') {
-                            namespace = 'staging'
-                        } else {
-                            namespace = 'dev'
-                        }
-                        
-                        echo "Deploying to the namespace: ${namespace}"
 
-                        sh """
-                           kubectl apply -f deployment.yaml -n ${namespace}
-                        """
-                    }
+
+        stage('Build Docker Image') {
+            steps {
+                sh '''
+                docker build -t ${DOCKER_IMAGE} Jenkins/Lab-23/.
+                '''
+            }
+        }
+        
+
+        stage('Push Docker Image to Docker Hub') {
+            steps {
+    
+                withCredentials([usernamePassword(credentialsId: 'Docker-Hub-Repo', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                    sh '''
+                    echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin
+                    docker push ${DOCKER_IMAGE}
+                    '''
+                }
+            }
+        }
+
+        
+        stage('Update Deployment File') {
+            steps {
+                sh '''
+                sed -i "s|image: .*|image: ${DOCKER_IMAGE}|" Jenkins/Lab-23/deployment.yml
+                '''
+            }
+        }
+
+        stage('Deploy to Kubernetes') {
+            steps {
+                 withKubeConfig([credentialsId: 'kubeconfig-file']) {
+                    sh 'kubectl apply -f Jenkins/Lab-23/deployment.yml'
                 }
             }
         }
     }
+
+    post {
+        always {
+            echo 'Pipeline execution complete!'
+        }
+    }
 }
+
