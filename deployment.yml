@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: my-deployment
+  namespace: default
 spec:
   replicas: 3
   selector:
@@ -14,6 +15,6 @@ spec:
     spec:
       containers:
       - name: my-container
-        image: gohary101/jenkins_repo1010:2.1
+        image: my-image:latest
         ports:
         - containerPort: 80

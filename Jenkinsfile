@@ -2,14 +2,13 @@ pipeline {
     agent any
 
     environment {
-        KUBE_CONFIG = credentials('kubeconfig-file')
-        DOCKER_IMAGE = 'gohary101/jenkins_repo1010:2.1'
+        DOCKER_IMAGE = 'gohary101/jenkins_repo1011:2.1'
     }
 
     stages {
         stage('Clone Repository') {
             steps {
-                git branch: 'dev', url: 'https://github.com/abdulrahman-elgohary/Multi-Branch.git'
+                git branch: 'main', url: 'https://github.com/IbrahimAdell/Lab'
             }
         }
 
@@ -17,7 +16,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 sh '''
-                docker build -t ${DOCKER_IMAGE} Jenkins/Lab-23/.
+                docker build -t ${DOCKER_IMAGE} .
                 '''
             }
         }
@@ -39,19 +38,10 @@ pipeline {
         stage('Update Deployment File') {
             steps {
                 sh '''
-                sed -i "s|image: .*|image: ${DOCKER_IMAGE}|" Jenkins/Lab-23/deployment.yml
+                sed -i "s|image: .*|image: ${DOCKER_IMAGE}|" deployment.yml
                 '''
             }
         }
-
-        stage('Deploy to Kubernetes') {
-            steps {
-                 withKubeConfig([credentialsId: 'kubeconfig-file']) {
-                    sh 'kubectl apply -f Jenkins/Lab-23/deployment.yml'
-                }
-            }
-        }
-    }
 
     post {
         always {
