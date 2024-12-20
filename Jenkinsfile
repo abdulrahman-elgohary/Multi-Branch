@@ -30,6 +30,7 @@ pipeline {
                     echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin
                     docker push ${DOCKER_IMAGE}
                     docker rmi -f ${DOCKER_IMAGE}
+                    docker logout
                     '''
                 }
             }
