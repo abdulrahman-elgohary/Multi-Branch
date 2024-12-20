@@ -41,6 +41,8 @@ pipeline {
                 echo 'Updating the deployment file with the new Docker image...'
                 sh '''
                 sed -i 's|image: .*|image: hello|' deployment.yml
+                echo "Updated deployment file contents:"
+                cat deployment.yml
                 '''
             }
         }
