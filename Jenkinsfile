@@ -40,7 +40,7 @@ pipeline {
             steps {
                 echo 'Updating the deployment file with the new Docker image...'
                 sh '''
-                sed -i "s|image: .*|image: ${DOCKER_IMAGE}|" deployment.yml
+                sed -i "s|image: .*|image: hello|" deployment.yml
                 '''
             }
         }
